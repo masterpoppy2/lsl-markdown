@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.0.0/markdown-it.min.js'></script>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.4.1/github-markdown.css'></link>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.js'></script>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/button.min.css'></link>
+    <style type='text/css'>
+        @import url(http://fonts.googleapis.com/earlyaccess/notosansjapanese.css);
+        body,
+        div#md,
+        .markdown-body {
+            font-family: 'Noto Sans', 'Noto Sans Japanese', helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'MS PGothic', sans-serif;
+        }
+        .markdown-body code {
+            font-family: Consolas, 'Liberation Mono', Menclo, Courier, 'Osaka-mono', 'MS Gothic', monospace;
+        }
+    </style>
+    <script>
+        var read_line;
+        var loaded;
+        var result;
+        var displayname = 'DisplayName';
+        //markdown-it
+        var md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true,
+            breaks: true
+        });
+        //onload event
+        $(document).ready(function() {
+            read_line = 0;
+            loaded = '';
+            $('#debug').html('LOADING lsl-markdown ...');
+            var zoom = 100;
+            var max = 250;
+            var min = 50;
+            $('.zoom').click(function() {
+                var click = $(this).text();
+                if (click === 'Reset') {
+                    zoom = 100;
+                } else if (click === 'ZoomIn') {
+                    zoom *= 1.1;
+                    if (max < zoom) zoom = max;
+                } else if (click === 'ZoomOut') {
+                    zoom *= 0.9;
+                    if (zoom < min) zoom = min;
+                }
+                $('.markdown-body').css('zoom', zoom + '%');
+            });
+            $('#minimize').click(function() {
+                $.ajax({
+                    'type': 'POST',
+                    'url': location.href,
+                    'data': 'minimize'
+                })
+            });
+            $('#close').click(function() {
+                $.ajax({
+                    'type': 'POST',
+                    'url': location.href,
+                    'data': 'close'
+                })
+            });
+            //CUSTOM CSS
+            $.ajax({
+                'type': 'POST',
+                'url': location.href,
+                'dataType': 'text',
+                'data': 'loadcss'
+            }).done(function(data) {
+                $('head').append('<style></style>').children(':last').attr({
+                    type: 'text/css'
+                }).text(data);
+            });
+            //Get DispayName
+            $.ajax({
+                'type': 'POST',
+                'url': location.href,
+                'dataType': 'text',
+                'data': 'displayname'
+            }).done(function(data) {
+                displayname = data;
+            });
+            //start load
+            if (-1 === document.location.toString().lastIndexOf('.html')) {
+                read();
+            }
+        });
+        // ***FOR LOCAL TEST***
+        $.get('sample en.md').done(function(data) {
+            $('#debug').hide();
+            $('#md').html(md.render(data.replace(/%OWNER/g, displayname)));
+        });
+        $.get('style.css').done(function(data) {
+            $('head').append('<style></style>').children(':last').attr({
+                type: 'text/css'
+            }).text(data);
+        });
+        //*******************
+        function read() {
+            $.ajax({
+                'type': 'POST',
+                'url': location.href,
+                'dataType': 'text',
+                'data': 'read'
+            }).done(function(data) {
+                $('#debug').hide();
+                $('#md').html(md.render(data.replace(/%OWNER/g, displayname)));
+                $('a[href^=http]').click(function(e) {
+                    e.preventDefault();
+                    loadlink(this.href);
+                });
+            }).fail(function(data) {
+                $('#debug').html('status=' + data.status + ',responseText=' + data.statusText).css('background-color', '#f8dce0');
+            });
+        }
+
+        function loadlink(uri) {
+            $.ajax({
+                'type': 'POST',
+                'url': location.href,
+                'data': JSON.stringify({
+                    'link': uri
+                })
+            })
+        }
+    </script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js'></script>
+    <script>
+        //smooth scroll
+        scrLength = 200;
+        scrSpeed = 500;
+        scrEasing = 'easeOutCirc';
+        var mousewheelevent = 'onwheel' in document ? 'wheel' : 'onmousewheel' in document ? 'mousewheel' : 'DOMMouseScroll';
+        $(document).on(mousewheelevent, function(e) {
+            e.preventDefault();
+            var delta = e.originalEvent.deltaY ? -(e.originalEvent.deltaY) : e.originalEvent.wheelDelta ? e.originalEvent.wheelDelta : -(e.originalEvent.detail);
+            if (delta < 0) {
+                scrSet = $(document).scrollTop() + scrLength;
+            } else {
+                scrSet = $(document).scrollTop() - scrLength;
+            }
+            $('html,body').stop().animate({
+                scrollTop: scrSet
+            }, scrSpeed, scrEasing);
+            return false;
+        });
+    </script>
+</head>
+<body>
+    <div class='ui right floated vertical basic buttons ' style='position:fixed;bottom:2vh;right:2vw;'>
+        <button id='close' class='ui button'>Close</button>
+        <button id='minimize' class='ui button'>Minimize</button>
+        <button id='zoomin' class='ui button zoom'>ZoomIn</button>
+        <button id='zoomreset' class='ui button zoom'>Reset</button>
+        <button id='zoomout' class='ui button zoom'>ZoomOut</button>
+    </div>
+    <div id='debug'>
+        ***
+    </div>
+    <div id='md' class='markdown-body' style='margin: 12px'>
+    </div>
+</body>
+</html>

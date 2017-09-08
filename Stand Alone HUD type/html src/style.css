@@ -1,0 +1,21 @@
+body {
+    background-image: url(http://farm5.static.flickr.com/4104/5127310748_e158af987a_o.jpg);
+    background-attachment: fixed;
+    background-size: auto 100vw;
+}
+
+#md,body,a:link,blockquote
+{
+    color: #1b0c3d;
+}
+
+blockquote {
+    border-color: #4e4e4e;
+}
+
+.markdown-body table tr,
+.markdown-body table tr:nth-child(2n),
+.markdown-body pre  {
+    background-color: rgba(255,255,255,0.5);
+    border-color: #4e4e4e;
+}
