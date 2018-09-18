@@ -131,8 +131,7 @@ state active
             }
         }
         else if(change & CHANGED_REGION || change & CHANGED_REGION_START){
-            llReleaseURL(URI);
-            request = llRequestURL();
+            llResetScript();
         }
     }
     

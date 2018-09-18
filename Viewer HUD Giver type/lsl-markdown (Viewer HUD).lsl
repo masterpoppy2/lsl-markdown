@@ -1,6 +1,6 @@
 // ********************************************
 // lsl-markdown (Viewer HUD Giver type - HUD)
-// 2017.04.16 MasterPoppy
+// 2018.09.18 MasterPoppy
 // ********************************************
 //CUSTOM CSS (optional)
 string css = "";
@@ -17,6 +17,7 @@ string html = "<!DOCTYPE html>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/button.min.css'></link>
 <style type='text/css'>
 @import url(http://fonts.googleapis.com/earlyaccess/notosansjapanese.css);
+body{background-color: #FFFFFF;}
 body,
 div#md,
 .markdown-body {
