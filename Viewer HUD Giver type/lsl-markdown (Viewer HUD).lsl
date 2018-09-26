@@ -294,7 +294,10 @@ default
     changed(integer change)
     {
         if(change & CHANGED_REGION){
-            llDetachFromAvatar();
+            llRequestPermissions(av, PERMISSION_ATTACH);
+            if(llGetPermissions() & PERMISSION_ATTACH){
+                llDetachFromAvatar();
+            }
         }
         else if(change & CHANGED_SCALE){
             if(llGetLinkMedia(LINK_THIS, render_face, [ PRIM_MEDIA_CURRENT_URL ])){

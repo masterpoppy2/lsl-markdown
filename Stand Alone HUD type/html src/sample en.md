@@ -225,7 +225,7 @@ You can apply custom style by editing the line 6 in each HUD script `string css 
 
 ## github
 You can get latest code of lsl-markdown  from github page:
-https://github.com/masterpoppy/lsl-markdown
+https://github.com/masterpoppy2/lsl-markdown
 
 ## System Requirements
 

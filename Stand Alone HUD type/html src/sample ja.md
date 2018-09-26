@@ -205,7 +205,7 @@ https://github.com/markdown-it/markdown-it
 
 ## githubページ
 lsl-markdownの最新版はこちら
-https://github.com/masterpoppy/lsl-markdown
+https://github.com/masterpoppy2/lsl-markdown
 
 ## 必要動作環境
 
